@@ -61,3 +61,7 @@ RUN echo "export PATH=/usr/local/cuda/bin:$PATH" >> ~/.bashrc && \
     echo "export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH" >> ~/.bashrc && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
     source ~/.bashrc
+
+# Install the ssh public key - Remove this in a production deployment
+COPY ./keys/id_rsa.pub /tmp/tmp.pub
+RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat /tmp/tmp.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && rm -f /tmp/tmp.pub
