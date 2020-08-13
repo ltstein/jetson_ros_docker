@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libglu1-mesa-dev \
         libgles2-mesa-dev \
         freeglut3-dev \
+        openssh-server \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -64,4 +65,7 @@ RUN echo "export PATH=/usr/local/cuda/bin:$PATH" >> ~/.bashrc && \
 
 # Install the ssh public key - Remove this in a production deployment
 COPY ./keys/id_rsa.pub /tmp/tmp.pub
-RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat /tmp/tmp.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && rm -f /tmp/tmp.pub
+RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat /tmp/tmp.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && sudo rm -f /tmp/tmp.pub
+
+RUN sudo /usr/bin/ssh-keygen -A
+ENTRYPOINT sudo service ssh start && bash
