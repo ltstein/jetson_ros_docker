@@ -7,6 +7,7 @@ RUN useradd -m $USERNAME && \
     echo "$USERNAME:$USERNAME" | chpasswd && \
     usermod --shell /bin/bash $USERNAME && \
     usermod -aG sudo $USERNAME && \
+    usermod -aG dialout $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME && \
     # Replace 1000 with your user/group id
@@ -20,20 +21,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         sudo \
         build-essential \
         git \
-        less \
-        emacs \
-        tmux \
-        bash-completion \
-        command-not-found \
-        software-properties-common \
-        xdg-user-dirs \
-        xsel \
-        dirmngr \
-        gpg-agent \
-        mesa-utils \
-        libglu1-mesa-dev \
-        libgles2-mesa-dev \
-        freeglut3-dev \
+        # less \
+        # emacs \
+        # tmux \
+        # bash-completion \
+        # command-not-found \
+        # software-properties-common \
+        # xdg-user-dirs \
+        # xsel \
+        # dirmngr \
+        # gpg-agent \
+        # mesa-utils \
+        # libglu1-mesa-dev \
+        # libgles2-mesa-dev \
+        # freeglut3-dev \
         openssh-server \
         && \
     apt-get clean && \
@@ -49,10 +50,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python-rosinstall-generator \
         python-wstool \
         build-essential \
+        #Added
+        python-catkin-tools \
+        python-serial \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN rosdep init
+
+
+COPY ./udev/99-serial.rules /etc/udev/rules.d/99-serial.rules
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
